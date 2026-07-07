@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -12,12 +12,7 @@
 </head>
 <body>
   <main class="app-shell">
-    <section id="home" class="screen home-screen active" aria-label="Pesquisa de produto">
-      <div class="ambient-line"></div>
-      <div class="hero-art" aria-hidden="true">
-        <div class="shower"></div><div class="tap"></div><div class="basin"></div><div class="wall-panel"></div>
-      </div>
-
+    <section id="home" class="screen home-screen active" aria-label="Product search">
       <div class="brand-block">
         <h1>PARISI</h1>
         <p>BATHWARE</p>
@@ -25,23 +20,29 @@
       </div>
 
       <form id="searchForm" class="search-card" autocomplete="off">
-        <label class="sr-only" for="searchInput">Digite o código do produto</label>
+        <label class="sr-only" for="searchInput">Enter product code</label>
         <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="m21 21-4.35-4.35M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <input id="searchInput" inputmode="search" placeholder="Digite o código do produto" />
-        <button aria-label="Pesquisar" type="submit">
+        <input id="searchInput" inputmode="search" placeholder="Enter product code" />
+        <button aria-label="Search" type="submit">
           <svg viewBox="0 0 24 24" fill="none"><path d="M4 12h15m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </form>
 
+      <button id="openBackToStock" class="secondary-action" type="button">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 3.8 7.2 12 11.4l8.2-4.2L12 3Z" stroke="currentColor" stroke-width="1.5"/><path d="M3.8 7.2v9.2L12 21l8.2-4.6V7.2M12 11.4V21" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        Back to Stock
+      </button>
+
       <div id="suggestions" class="suggestions" hidden></div>
-      <p id="loadStatus" class="load-status">Carregando planilha...</p>
+      <p id="loadStatus" class="load-status">Loading spreadsheet...</p>
+      <p class="subtle-note">If you find any error, please let THIAGO know.</p>
     </section>
 
-    <section id="result" class="screen result-screen" aria-label="Informações do produto">
+    <section id="result" class="screen result-screen" aria-label="Product details">
       <header class="result-header">
-        <button id="backButton" class="ghost-button" type="button" aria-label="Voltar">
+        <button id="backButton" class="ghost-button" type="button" aria-label="Back">
           <svg viewBox="0 0 24 24" fill="none"><path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Voltar
+          Back
         </button>
         <div><p>PARISI</p><span>PRODUCT DETAILS</span></div>
       </header>
@@ -66,10 +67,41 @@
         </div>
       </article>
 
+      <button id="addCurrentToStock" class="gold-button compact" type="button">Add this item to Back to Stock</button>
+
       <form id="resultSearchForm" class="mini-search" autocomplete="off">
-        <input id="resultSearchInput" placeholder="Pesquisar outro código" />
+        <input id="resultSearchInput" placeholder="Search another code" />
         <button type="submit">Search</button>
       </form>
+      <p class="subtle-note">If you find any error, please let THIAGO know.</p>
+    </section>
+
+    <section id="backStock" class="screen stock-screen" aria-label="Back to Stock list">
+      <header class="stock-header">
+        <button id="closeBackToStock" class="ghost-button" type="button" aria-label="Back">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back
+        </button>
+        <h2>Back to Stock</h2>
+      </header>
+
+      <p class="stock-copy">Add the items you want to send back to stock. This list highlights only the item code and location.</p>
+
+      <form id="stockAddForm" class="stock-add-form" autocomplete="off">
+        <input id="stockCodeInput" placeholder="Item code" />
+        <button type="submit">Add</button>
+      </form>
+      <p id="stockMessage" class="stock-message"></p>
+
+      <div class="stock-table-wrap">
+        <table class="stock-table">
+          <thead><tr><th>Item Code</th><th>Location</th><th></th></tr></thead>
+          <tbody id="stockTableBody"></tbody>
+        </table>
+      </div>
+
+      <button id="copyStockList" class="gold-button" type="button">Copy Back to Stock List (0)</button>
+      <p class="subtle-note">If you find any error, please let THIAGO know.</p>
     </section>
   </main>
   <script src="script.js"></script>
