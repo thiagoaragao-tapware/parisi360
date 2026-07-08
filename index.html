@@ -1,109 +1,175 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#070604" />
-  <title>PARISI | Product Search</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ParisiFinder</title>
+<meta name="description" content="Parisi Bathware warehouse product finder">
+<meta name="theme-color" content="#0a0908">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ParisiFinder">
+
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="app-shell">
-    <section id="home" class="screen home-screen active" aria-label="Product search">
-      <div class="brand-block">
-        <h1>PARISI</h1>
-        <p>BATHWARE</p>
+
+<div class="noise-overlay" aria-hidden="true"></div>
+
+<div class="app" id="app">
+
+  <!-- ============ SEARCH VIEW ============ -->
+  <section class="view view-search active" id="view-search" data-view="search">
+    <header class="topbar">
+      <button class="icon-btn" id="menuBtn" aria-label="Menu">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </button>
+      <div class="brand">
+        <h1 class="brand-name">PARISI</h1>
+        <p class="brand-sub">BATHWARE</p>
+      </div>
+      <button class="icon-btn" id="cubeBtn" aria-label="Back to stock">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2 3 7v10l9 5 9-5V7l-9-5Z" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M3 7l9 5 9-5M12 12v10" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+      </button>
+    </header>
+
+    <div class="search-wrap">
+      <div class="search-bar">
+        <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="m20 20-3.2-3.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <input type="text" id="searchInput" placeholder="Search product code" autocomplete="off" spellcheck="false">
+        <button class="search-go" id="searchGo" aria-label="Search">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <ul class="suggestions" id="suggestions"></ul>
+    </div>
+
+    <button class="pill-btn outline" id="backToStockBtn">
+      <svg viewBox="0 0 24 24" width="15" height="15"><path d="M12 2 3 7v10l9 5 9-5V7l-9-5Z" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M3 7l9 5 9-5M12 12v10" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+      <span>Back to Stock</span>
+    </button>
+
+    <div class="recent-block">
+      <p class="section-label">Recent Searches</p>
+      <ul class="recent-list" id="recentList">
+        <li class="empty-note">No recent searches yet.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCT DETAIL VIEW ============ -->
+  <section class="view view-detail" id="view-detail" data-view="detail">
+    <header class="topbar">
+      <button class="back-link" id="detailBackBtn">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M15 5 8 12l7 7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Back</span>
+      </button>
+      <div></div>
+      <button class="icon-btn" id="cubeBtn2" aria-label="Back to stock">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2 3 7v10l9 5 9-5V7l-9-5Z" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M3 7l9 5 9-5M12 12v10" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+      </button>
+    </header>
+
+    <div class="detail-card">
+      <p class="section-label">Product Information</p>
+      <div class="detail-title-row">
+        <h2 class="detail-code" id="detailCode">—</h2>
+        <span class="status-pill" id="detailStatusPill"><span class="dot"></span><span id="detailStatusText">—</span></span>
+      </div>
+      <hr class="divider">
+
+      <div class="field-row">
+        <span class="field-label">Description</span>
+        <span class="field-value" id="detailDescription">—</span>
+      </div>
+      <div class="field-row">
+        <span class="field-label">Code</span>
+        <span class="field-value" id="detailCode2">—</span>
+      </div>
+      <div class="field-row">
+        <span class="field-label">Quantity</span>
+        <span class="field-value" id="detailQuantity">—</span>
+      </div>
+      <div class="field-row">
+        <span class="field-label">Location</span>
+        <span class="field-value accent" id="detailLocation">—</span>
+      </div>
+      <div class="field-row">
+        <span class="field-label">Shelf</span>
+        <span class="field-value accent" id="detailShelf">—</span>
+      </div>
+
+      <p class="last-updated" id="detailUpdated"></p>
+    </div>
+
+    <div class="add-to-stocklist-wrap">
+      <button class="pill-btn outline small" id="addFromDetailBtn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <span>Add to Back to Stock list</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ BACK TO STOCK VIEW ============ -->
+  <section class="view view-stock" id="view-stock" data-view="stock">
+    <header class="topbar">
+      <button class="back-link" id="stockBackBtn">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M15 5 8 12l7 7" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Back</span>
+      </button>
+      <div></div>
+      <div style="width:36px"></div>
+    </header>
+
+    <div class="stock-header">
+      <h2 class="stock-title">Back to Stock</h2>
+      <p class="stock-sub">Add the items you want to send back to stock.</p>
+      <p class="stock-sub muted">This list highlights only the item code and location.</p>
+    </div>
+
+    <div class="stock-search-row">
+      <div class="search-bar small">
+        <svg class="search-icon" viewBox="0 0 24 24" width="15" height="15"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="m20 20-3.2-3.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <input type="text" id="stockSearchInput" placeholder="Search by product code..." autocomplete="off" spellcheck="false">
+      </div>
+      <button class="pill-btn solid" id="stockAddBtn">Add item</button>
+    </div>
+    <ul class="suggestions" id="stockSuggestions"></ul>
+
+    <div class="stock-list-card">
+      <div class="stock-list-headrow">
+        <span>Item Code</span>
+        <span>Location</span>
         <span></span>
       </div>
-
-      <form id="searchForm" class="search-card" autocomplete="off">
-        <label class="sr-only" for="searchInput">Enter product code</label>
-        <svg class="icon" viewBox="0 0 24 24" fill="none"><path d="m21 21-4.35-4.35M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        <input id="searchInput" inputmode="search" placeholder="Enter product code" />
-        <button aria-label="Search" type="submit">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M4 12h15m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </form>
-
-      <button id="openBackToStock" class="secondary-action" type="button">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 3.8 7.2 12 11.4l8.2-4.2L12 3Z" stroke="currentColor" stroke-width="1.5"/><path d="M3.8 7.2v9.2L12 21l8.2-4.6V7.2M12 11.4V21" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-        Back to Stock
+      <ul class="stock-list" id="stockList">
+        <li class="empty-note" id="stockEmptyNote">No items added yet.</li>
+      </ul>
+      <button class="add-item-row" id="stockAddRowBtn">
+        <svg viewBox="0 0 24 24" width="14" height="14"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <span>Add item</span>
       </button>
+    </div>
 
-      <div id="suggestions" class="suggestions" hidden></div>
-      <p id="loadStatus" class="load-status">Loading spreadsheet...</p>
-      <p class="subtle-note">If you find any error, please let THIAGO know.</p>
-    </section>
+    <button class="pill-btn outline wide" id="sendToStockBtn">
+      <span id="sendToStockLabel">Send to Stock (0)</span>
+      <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2 3 7v10l9 5 9-5V7l-9-5Z" stroke="currentColor" stroke-width="1.2" fill="none"/><path d="M3 7l9 5 9-5M12 12v10" stroke="currentColor" stroke-width="1.2" fill="none"/></svg>
+    </button>
+  </section>
 
-    <section id="result" class="screen result-screen" aria-label="Product details">
-      <header class="result-header">
-        <button id="backButton" class="ghost-button" type="button" aria-label="Back">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <div><p>PARISI</p><span>PRODUCT DETAILS</span></div>
-      </header>
+</div>
 
-      <article class="product-panel">
-        <div class="status-row"><span id="stockBadge" class="badge">Stock</span><span id="resultCategory"></span></div>
-        <h2 id="resultCode">—</h2>
-        <p id="resultDescription" class="description">—</p>
+<footer class="app-footer">
+  If you find any error, please let <strong>Thiago</strong> know.
+</footer>
 
-        <section class="location-highlight">
-          <span>LOCATION / SHELF</span>
-          <strong id="resultLocation">—</strong>
-        </section>
+<div class="toast" id="toast"></div>
 
-        <div class="grid-info">
-          <div><span>Available</span><strong id="availableStock">—</strong></div>
-          <div><span>Stock Level</span><strong id="stockLevel">—</strong></div>
-          <div><span>Unallocated</span><strong id="unallocatedStock">—</strong></div>
-          <div><span>Outstanding S/O</span><strong id="outstandingSO">—</strong></div>
-          <div><span>Components</span><strong id="components">—</strong></div>
-          <div><span>Status</span><strong id="stockingStatus">—</strong></div>
-        </div>
-      </article>
-
-      <button id="addCurrentToStock" class="gold-button compact" type="button">Add this item to Back to Stock</button>
-
-      <form id="resultSearchForm" class="mini-search" autocomplete="off">
-        <input id="resultSearchInput" placeholder="Search another code" />
-        <button type="submit">Search</button>
-      </form>
-      <p class="subtle-note">If you find any error, please let THIAGO know.</p>
-    </section>
-
-    <section id="backStock" class="screen stock-screen" aria-label="Back to Stock list">
-      <header class="stock-header">
-        <button id="closeBackToStock" class="ghost-button" type="button" aria-label="Back">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <h2>Back to Stock</h2>
-      </header>
-
-      <p class="stock-copy">Add the items you want to send back to stock. This list highlights only the item code and location.</p>
-
-      <form id="stockAddForm" class="stock-add-form" autocomplete="off">
-        <input id="stockCodeInput" placeholder="Item code" />
-        <button type="submit">Add</button>
-      </form>
-      <p id="stockMessage" class="stock-message"></p>
-
-      <div class="stock-table-wrap">
-        <table class="stock-table">
-          <thead><tr><th>Item Code</th><th>Location</th><th></th></tr></thead>
-          <tbody id="stockTableBody"></tbody>
-        </table>
-      </div>
-
-      <button id="copyStockList" class="gold-button" type="button">Copy Back to Stock List (0)</button>
-      <p class="subtle-note">If you find any error, please let THIAGO know.</p>
-    </section>
-  </main>
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
